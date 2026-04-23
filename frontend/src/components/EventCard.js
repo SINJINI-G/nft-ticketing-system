@@ -4,10 +4,10 @@ import { Link } from "react-router-dom";
 export default function EventCard({ event, role }) {
   return (
     /* Added max-w-xs to restrict width and h-[450px] to keep height consistent */
-    <div className="bg-white rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-50 overflow-hidden flex flex-col transition-transform hover:scale-[1.02] max-w-[280px] h-[480px] mx-auto">
+    <div className="bg-white rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-50 overflow-hidden flex flex-col transition-transform hover:scale-[1.02] max-w-[280px] h-[350px] mx-auto">
       
       {/* Fixed height image container */}
-      <div className="relative h-72 w-full">
+      <div className="relative h-40 w-60">
         <img 
           src={event.image} 
           alt={event.name} 

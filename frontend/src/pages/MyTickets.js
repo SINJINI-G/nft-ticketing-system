@@ -62,26 +62,26 @@ export default function MyTickets() {
           No tickets found in this wallet.
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {tickets.map((ticket, i) => (
-            <div key={i} className="bg-white rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-50 overflow-hidden flex flex-col">
+            <div key={i} className="bg-white rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-50 overflow-hidden flex flex-col max-w-[260px] h-[360px] mx-auto w-full">
               {/* Event Image as Header */}
-              <div className="h-32 w-full relative">
+              <div className="h-48 w-full relative">
                 <img 
                   src={ticket.eventImage} 
                   alt={ticket.eventName} 
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-4">
+                <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-transparent flex items-end p-4">
                   {/* <span className="text-white text-xs font-bold uppercase tracking-widest bg-indigo-500 px-2 py-1 rounded-md">
                     Ticket #{ticket.tokenId}
                   </span> */}
                 </div>
               </div>
 
-              <div className="p-6 text-center">
-                <h4 className="text-xl font-bold text-slate-800 truncate">{ticket.eventName}</h4>
-                <p className="text-sm text-slate-400 mt-1 mb-6 flex items-center justify-center gap-2">
+              <div className="p-6 text-center flex flex-col flex-grow">
+                <h4 className="text-lg font-bold text-slate-800 truncate">{ticket.eventName}</h4>
+                <p className="text-xs text-slate-400 mt-1 mb-4 flex items-center justify-center gap-2">
                   📅 {ticket.eventDate}
                 </p>
                 
