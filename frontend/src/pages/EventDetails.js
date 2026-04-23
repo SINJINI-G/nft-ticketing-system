@@ -6,10 +6,13 @@ import { useParams } from "react-router-dom";
 const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
 const abi = [
   "function getTicketEvent(uint256) view returns (uint256)",
-  "function getEvent(uint256) view returns (tuple(string name, string date, uint256 price, uint256 ticketsSold, string image))"
+  "function getEvent(uint256) view returns (tuple(string name, string date, uint256 price, uint256 ticketsSold, string image))",
+  "function ticketScanned(uint256) view returns (bool)", // 🔥 Added
+  "function checkIn(uint256) public"
 ];
 
 let activeStream = null;
+let isProcessing = false;
 
 export default function EventDetails() {
   const { id } = useParams();
@@ -54,14 +57,58 @@ export default function EventDetails() {
   }
 
   async function verifyTicket(data) {
+    if (isProcessing) return;
+    isProcessing = true;
     try {
       const tokenId = data.split(":")[1];
       const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const contract = new ethers.Contract(contractAddress, abi, provider);
+      const signer = provider.getSigner();
+      // const contract = new ethers.Contract(contractAddress, abi, provider);
+      const contract = new ethers.Contract(contractAddress, abi, signer);
       const ticketEventId = await contract.getTicketEvent(tokenId);
-      setResult(ticketEventId.toString() === currentEventId.toString() ? "✅ VALID ACCESS" : "❌ WRONG EVENT");
-    } catch { setResult("❌ INVALID TICKET"); }
+  //     setResult(ticketEventId.toString() === currentEventId.toString() ? "✅ VALID ACCESS" : "❌ WRONG EVENT");
+  //   } catch { setResult("❌ INVALID TICKET"); }
+  // }
+
+  // Check if it's the right event first
+    // const ticketEventId = await contract.getTicketEvent(tokenId);
+    if (ticketEventId.toString() !== currentEventId.toString()) {
+      setResult("❌ WRONG EVENT");
+      isProcessing = false;
+      return;
+    }
+
+    // Check if already scanned
+    const isAlreadyScanned = await contract.ticketScanned(tokenId);
+    if (isAlreadyScanned) {
+      setResult("⚠️ ALREADY SCANNED");
+      isProcessing = false;
+      return;
+      setTimeout(() => {
+      window.location.reload();
+    }, 5000);
+    }
+
+    // Mark as scanned on blockchain
+    const tx = await contract.checkIn(tokenId);
+    setIsScanning(false);
+    await tx.wait();
+    
+    setResult("✅ VALID ACCESS");
+    // return;
+    setTimeout(() => {
+      // window.location.reload();
+      window.location.href = `/`
+    }, 5000);
+  } catch (err) { 
+    console.error(err);
+    setResult("❌ INVALID TICKET"); 
+    // isProcessing = false;
+    setTimeout(() => {
+      window.location.reload();
+    }, 5000);
   }
+}
 
   return (
     <main className="max-w-4xl mx-auto py-12 px-6">
@@ -103,7 +150,7 @@ export default function EventDetails() {
             <h2 className="text-2xl font-bold text-slate-900 mb-2">Gate Control</h2>
             <p className="text-slate-400 mb-10">Scan visitor QR code to verify entry</p>
             <button 
-              onClick={() => { setResult(""); setScanned(""); setIsScanning(true); }}
+              onClick={() => { setResult(""); setScanned(""); setIsScanning(true); setScannerKey(prev => prev + 1); isProcessing = false; }}
               className="px-12 py-5 bg-indigo-500 text-white rounded-2xl font-bold text-lg hover:bg-indigo-600 transition-all hover:scale-105 shadow-xl shadow-indigo-100"
             >
               Start Scanning
@@ -118,7 +165,7 @@ export default function EventDetails() {
                 onResult={(res) => {
                   if (res) {
                     verifyTicket(res.text);
-                    stopCamera();
+                    // stopCamera();
                     setIsScanning(false);
                     setScannerKey(prev => prev + 1);
                   }

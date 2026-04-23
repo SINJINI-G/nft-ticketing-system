@@ -24,7 +24,13 @@ contract TicketNFT is ERC721, Ownable {
     mapping(uint256 => Event) public events;
     mapping(uint256 => Ticket) public tickets;
     mapping(address => uint256[]) public userTickets;
+    mapping(uint256 => bool) public ticketScanned;
 
+    function checkIn(uint256 _tokenId) public {
+        // Only the organiser should ideally call this, but for now:
+        require(!ticketScanned[_tokenId], "Already scanned");
+        ticketScanned[_tokenId] = true;
+    }
 
     function getUserTickets(address user) public view returns (uint256[] memory) {
         return userTickets[user];
