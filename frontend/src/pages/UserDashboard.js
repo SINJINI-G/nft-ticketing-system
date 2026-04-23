@@ -5,14 +5,13 @@ import { useNavigate } from "react-router-dom";
 
 const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
 const abi = [
-  "function getEvent(uint256) view returns (tuple(string name, string date, uint256 price, uint256 ticketsSold, string image))",
+  "function getEvent(uint256) view returns (tuple(string name, string date, uint256 price, uint256 totalTickets, uint256 ticketsSold, string image))",
   "function eventCounter() view returns (uint256)"
 ];
 
 export default function UserDashboard() {
   const [events, setEvents] = useState([]);
   const navigate = useNavigate();
-
   async function loadEvents() {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const contract = new ethers.Contract(contractAddress, abi, provider);
@@ -20,7 +19,7 @@ export default function UserDashboard() {
     let arr = [];
     for (let i = 0; i < count; i++) {
       const e = await contract.getEvent(i);
-      arr.push({ id: i.toString(), name: e.name, date: e.date, price: ethers.utils.formatEther(e.price), sold: e.ticketsSold.toString(), image: e.image });
+      arr.push({ id: i.toString(), name: e.name, date: e.date, price: ethers.utils.formatEther(e.price), sold: e.ticketsSold.toString(), total: e.totalTickets.toString(), image: e.image });
     }
     setEvents(arr);
   }

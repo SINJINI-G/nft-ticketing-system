@@ -5,9 +5,9 @@ import EventCard from "../components/EventCard";
 const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
 
 const abi = [
-  "function getEvent(uint256) view returns (tuple(string name, string date, uint256 price, uint256 ticketsSold, string image))",
-  "function eventCounter() view returns (uint256)",
-  "function createEvent(string,string,uint256,string)"
+  "function getEvent(uint256) view returns (tuple(string name, string date, uint256 price, uint256 totalTickets, uint256 ticketsSold, string image))",
+  "function createEvent(string,string,uint256,uint256,string)",
+  "function eventCounter() view returns (uint256)"
 ];
 
 export default function OrganiserDashboard() {
@@ -17,6 +17,7 @@ export default function OrganiserDashboard() {
   const [price, setPrice] = useState("");
   const [image, setImage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [totalTickets, setTotalTickets] = useState("");
 
   async function createEvent() {
     if (!name || !date || !price || !image) {
@@ -36,7 +37,13 @@ export default function OrganiserDashboard() {
       const signer = provider.getSigner();
       const contract = new ethers.Contract(contractAddress, abi, signer);
 
-      const tx = await contract.createEvent(name, date, ethers.utils.parseEther(price), image);
+      const tx = await contract.createEvent(
+  name,
+  date,
+  ethers.utils.parseEther(price),
+  totalTickets,
+  image
+);
       await tx.wait();
       alert("Event Created Successfully!");
       loadEvents();
@@ -57,13 +64,14 @@ export default function OrganiserDashboard() {
       for (let i = 0; i < count; i++) {
         const e = await contract.getEvent(i);
         arr.push({
-          id: i.toString(),
-          name: e.name,
-          date: e.date,
-          price: ethers.utils.formatEther(e.price),
-          sold: e.ticketsSold.toString(),
-          image: e.image
-        });
+  id: i.toString(),
+  name: e.name,
+  date: e.date,
+  price: ethers.utils.formatEther(e.price),
+  sold: e.ticketsSold.toString(),
+  total: e.totalTickets.toString(),
+  image: e.image
+});
       }
       setEvents(arr);
     } catch (err) {
@@ -114,6 +122,18 @@ export default function OrganiserDashboard() {
                   className="w-full mt-1 px-5 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all"
                   placeholder="0.05" 
                   onChange={(e) => setPrice(e.target.value)} 
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-slate-400 uppercase ml-1">
+                  Total Tickets
+                </label>
+                <input
+                  type="number"
+                  className="w-full mt-1 px-5 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                  placeholder="e.g. 100"
+                  onChange={(e) => setTotalTickets(e.target.value)}
                 />
               </div>
 

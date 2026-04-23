@@ -7,7 +7,7 @@ const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
 const abi = [
   "function getUserTickets(address) view returns (uint256[])",
   "function getTicketEvent(uint256) view returns (uint256)",
-  "function getEvent(uint256) view returns (tuple(string name, string date, uint256 price, uint256 ticketsSold, string image))"
+  "function getEvent(uint256) view returns (tuple(string name, string date, uint256 price, uint256 totalTickets, uint256 ticketsSold, string image))"
 ];
 
 export default function MyTickets() {

@@ -13,6 +13,7 @@ contract TicketNFT is ERC721, Ownable {
         string name;
         string date;
         uint256 price;
+        uint256 totalTickets;
         uint256 ticketsSold;
         string image;
     }
@@ -40,19 +41,28 @@ contract TicketNFT is ERC721, Ownable {
 
     // ✅ CREATE EVENT (ORGANISER)
     function createEvent(
-        string memory name,
-        string memory date,
-        uint256 price,
-        string memory image
+        string memory _name,
+        string memory _date,
+        uint256 _price,
+        uint256 _totalTickets,
+        string memory _image
     ) public {
-        events[eventCounter] = Event(name, date, price, 0, image);
+        events[eventCounter] = Event(
+            _name,
+            _date,
+            _price,
+            _totalTickets,
+            0,
+            _image
+        );
+
         eventCounter++;
     }
 
     // ✅ BUY TICKET
     function buyTicket(uint256 eventId) public payable {
         Event storage e = events[eventId];
-
+        require(events[eventId].ticketsSold < events[eventId].totalTickets, "Sold Out");
         require(msg.value >= e.price, "Not enough ETH");
 
         uint256 tokenId = tokenCounter;

@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
 const abi = [
   "function getTicketEvent(uint256) view returns (uint256)",
-  "function getEvent(uint256) view returns (tuple(string name, string date, uint256 price, uint256 ticketsSold, string image))",
+  "function getEvent(uint256) view returns (tuple(string name, string date, uint256 price, uint256 totalTickets, uint256 ticketsSold, string image))",
   "function ticketScanned(uint256) view returns (bool)", // 🔥 Added
   "function checkIn(uint256) public"
 ];

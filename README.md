@@ -29,6 +29,12 @@ cd frontend
 npm install
 npm start
 
+### 7. Start backend
+cd backend
+npm init -y
+npm install express cors nodemailer qrcode
+node server.js
+
 ### Run the App
 Open in browser:
 http://localhost:3000
