@@ -13,31 +13,31 @@ npx hardhat run scripts/deploy.js --network localhost
 
 ### 4. Update frontend with contract address
 Environment Setup:
-Create a `.env` file inside the `frontend` folder
-You can refer to `.env.example` for format
+- Create a `.env` file inside the `frontend` folder
+- You can refer to `.env.example` for format
 
 ### 5. Setup MetaMask
 Add new network:
-    Network Name: Hardhat Localhost
-    RPC URL: http://127.0.0.1:8545
-    Chain ID: 31337
-    Currency: ETH
-    Import account using private key from Hardhat terminal
+   - Network Name: Hardhat Localhost
+   - RPC URL: http://127.0.0.1:8545
+   - Chain ID: 31337
+   - Currency: ETH
+   - Import account using private key from Hardhat terminal
 
 ### 6. Start frontend
-cd frontend
-npm install
-npm start
+- cd frontend
+- npm install
+- npm start
 
 ### 7. Start backend
-cd backend
-npm init -y
-npm install express cors nodemailer qrcode
-node server.js
+- cd backend
+- npm init -y
+- npm install express cors nodemailer qrcode
+- node server.js
 
 ### Run the App
 Open in browser:
-http://localhost:3000
+- http://localhost:3000
 
 ---
 
@@ -46,3 +46,4 @@ http://localhost:3000
 - Buy tickets
 - Transfer tickets
 - QR verification
+- Email Tickets
